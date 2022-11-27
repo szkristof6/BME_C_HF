@@ -414,6 +414,11 @@ static ListaElem *kereses_a_listaban(ListaElem *lista, KeresesiListaElem *query,
         {
             ListaElem *uj;
             uj = (ListaElem *)malloc(sizeof(ListaElem));
+            if (uj == NULL)
+            {
+                printf("Nem sikerült memóriát foglalni!\n");
+                kilepes(lista);
+            }
             uj->kov = szurt_lista;
             uj->adat[0] = mozgo->adat[0];
             szurt_lista = uj;
@@ -595,7 +600,11 @@ void fomenu(ListaElem *lista)
 
             scanf("%d", &tipus_valasztas);
             if (!megfelelo_e(tipus_valasztas, tipusok, 4))
-                printf("Nem megfelelő a bemeneti formátum!");
+            {
+                printf("Nem megfelelő a bemeneti formátum! \n");
+                printf("Visszatérés a főmenü elejére... \n");
+                fomenu(lista);
+            }
 
             for (size_t i = 0; i < 4; i++)
                 if (tipusok[i] == tipus_valasztas)
@@ -607,6 +616,11 @@ void fomenu(ListaElem *lista)
 
             KeresesiListaElem *uj;
             uj = (KeresesiListaElem *)malloc(sizeof(KeresesiListaElem));
+            if (uj == NULL)
+            {
+                printf("Nem sikerült memóriát foglalni!\n");
+                kilepes(lista);
+            }
             uj->kov = tobb_adat;
             uj->query = pattern;
             uj->index = tipus_valasztas;
@@ -616,21 +630,33 @@ void fomenu(ListaElem *lista)
             int kereses_valasztas = 0;
             if (valasztas_db <= 4)
             {
-                printf("Keresés indítása, vagy újabb típus kiválasztása? [0] Keresés indítása, [1] Új tipus kiválasztása \n");
+                bool helyes_valasztas = false;
+                while (!helyes_valasztas)
+                {
+                    printf("Keresés indítása, vagy újabb típus kiválasztása? [0] Keresés indítása, [1] Új tipus kiválasztása \n");
 
-                scanf("%d", &kereses_valasztas);
-                int lehetosegek[2] = {0, 1};
-                if (!megfelelo_e(kereses_valasztas, lehetosegek, 2))
-                    printf("Nem megfelelő a bemeneti formátum!");
+                    scanf("%d", &kereses_valasztas);
+                    int lehetosegek[2] = {0, 1};
+                    if (!megfelelo_e(kereses_valasztas, lehetosegek, 2))
+                        printf("Nem megfelelő a bemeneti formátum! \n");
+                    else
+                        helyes_valasztas = true;
+                }
             }
             else
             {
-                printf("Keresés indítása? [0] Keresés indítása \n");
+                bool helyes_valasztas = false;
+                while (!helyes_valasztas)
+                {
+                    printf("Keresés indítása? [0] Keresés indítása \n");
 
-                scanf("%d", &kereses_valasztas);
-                int lehetosegek[1] = {0};
-                if (!megfelelo_e(kereses_valasztas, lehetosegek, 1))
-                    printf("Nem megfelelő a bemeneti formátum!");
+                    scanf("%d", &kereses_valasztas);
+                    int lehetosegek[1] = {0};
+                    if (!megfelelo_e(kereses_valasztas, lehetosegek, 1))
+                        printf("Nem megfelelő a bemeneti formátum! \n");
+                    else
+                        helyes_valasztas = true;
+                }
             }
 
             if (kereses_valasztas == 0)
@@ -667,7 +693,11 @@ void menu_3(ListaElem *lista)
 
     int lehetosegek[3] = {0, 1, 2};
     if (!megfelelo_e(tipus_valasztas, lehetosegek, 4))
-        printf("Nem megfelelő a bemeneti formátum!");
+    {
+        printf("Nem megfelelő a bemeneti formátum! \n");
+        printf("Visszatérés... \n");
+        menu_3(lista);
+    }
 
     if (tipus_valasztas == 0)
         fomenu(lista);
